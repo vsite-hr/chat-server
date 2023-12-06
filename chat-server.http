@@ -1,0 +1,10 @@
+GET http://localhost:8080/groups?groupName=group1
+
+
+### Create Group
+PUT http://localhost:8080/groups/group1
+Content-Type: application/json
+
+{
+    "groupName": "group1"
+}

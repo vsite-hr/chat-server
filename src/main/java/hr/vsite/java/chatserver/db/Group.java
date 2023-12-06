@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 
 import java.util.Objects;
 
-@Entity
+@Entity(name = "groups")
 public class Group {
 
     @Id

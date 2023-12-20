@@ -2,5 +2,9 @@ package hr.vsite.java.chatserver.db;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GroupRepository extends JpaRepository<Group, String> {
+import java.util.List;
+
+public interface GroupRepository extends JpaRepository<Group, String>, GroupRepositoryCustom {
+
+    List<Group> findByGroupNameStartsWith(String groupName);
 }

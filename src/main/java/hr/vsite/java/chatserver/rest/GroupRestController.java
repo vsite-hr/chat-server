@@ -1,8 +1,8 @@
 package hr.vsite.java.chatserver.rest;
 
 import hr.vsite.java.chatserver.db.Group;
-import hr.vsite.java.chatserver.db.GroupRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import hr.vsite.java.chatserver.domain.GroupService;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -12,17 +12,24 @@ import java.util.List;
 public class GroupRestController {
     org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GroupRestController.class);
 
-    @Autowired
-    private GroupRepository groupRepository;
+    private final GroupService groupService;
+
+    public GroupRestController(GroupService groupService) {
+        this.groupService = groupService;
+    }
 
     @PutMapping("/groups/{groupName}")
     public void createGroup(@PathVariable String groupName, @RequestBody GroupDTO groupDTO) {
         logger.info("Creating group {} - {}", groupName, groupDTO);
+        Group group = new Group();
+        group.setGroupName(groupName);
+        groupService.createGroup(group);
     }
 
     @DeleteMapping("/groups/{groupName}")
     public void deleteGroup(@PathVariable String groupName) {
         logger.info("Deleting group {}", groupName);
+        groupService.deleteGroup(groupName);
     }
 
     @GetMapping("/groups")
@@ -31,8 +38,14 @@ public class GroupRestController {
 //        return groupRepository.findAll()
 //                .stream().map(this::toDto)
 //                .collect(Collectors.toList());
+        List<Group> groups;
+        if (StringUtils.hasText(groupName)) {
+            groups = groupService.findGroups(groupName);
+        } else {
+            groups = groupService.getGroups();
+        }
         List<GroupDTO> groupDTOS = new LinkedList<>();
-        for (Group group : groupRepository.findAll()) {
+        for (Group group : groups) {
             groupDTOS.add(toDto(group));
         }
         return groupDTOS;
